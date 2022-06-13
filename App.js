@@ -1,23 +1,27 @@
-import React, { useState ,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { bankOne } from './constants.js';
 import './App.scss'
 
 function App() {
   const [volume, setVolume] = useState(1)
+  const [recording, setRecording] = useState("")
   return (
     <div className='inner-container'>
       <h2>drum machine</h2>
 
       {/* Map the sounds in the imported dictionary to the buttons that we will render*/}
-      {bankOne.map((clip) => (<Pad key={clip.id} clip={clip} />))}
+      {bankOne.map((clip) => (<Pad key={clip.id} clip={clip} volume={volume} setRecording={setRecording}/>))}
       <br />
       <h4>Volume</h4>
       <input type='range' onChange={(e) => setVolume(e.target.value)} step='0.01' value={volume} max='1' min='0' className='webkit-slider-runnable-track' />
+      <h3>
+        {recording}
+      </h3>
     </div>
   );
 }
 
-const Pad = ({ clip }) => {
+const Pad = ({ clip, volume, setRecording }) => {
 
   // Active state for button animation
   const [active, setActive] = useState(false)
@@ -42,9 +46,13 @@ const Pad = ({ clip }) => {
     setActive(true);
     setTimeout(() => setActive(false), 200)
 
-    // Set the audio to start from the beginning
-    bankOne.currentTime = 0
-    bankOne.play()
+    // Set audioTag equal to our volume that we just passed in as prop in function
+    bankOne.volume = volume;
+    bankOne.currentTime = 0;
+    bankOne.play();
+
+    // Record which keys are pressed so we can render them together
+    setRecording((prev) => prev + clip.keyTrigger + ' ')
   };
 
   return (
