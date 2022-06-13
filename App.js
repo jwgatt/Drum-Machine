@@ -1,14 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState ,useEffect} from 'react'
 import { bankOne } from './constants.js';
 import './App.scss'
 
 function App() {
+  const [volume, setVolume] = useState(1)
   return (
     <div className='inner-container'>
       <h2>drum machine</h2>
 
       {/* Map the sounds in the imported dictionary to the buttons that we will render*/}
       {bankOne.map((clip) => (<Pad key={clip.id} clip={clip} />))}
+      <br />
+      <h4>Volume</h4>
+      <input type='range' onChange={(e) => setVolume(e.target.value)} step='0.01' value={volume} max='1' min='0' className='webkit-slider-runnable-track' />
     </div>
   );
 }
@@ -16,10 +20,10 @@ function App() {
 const Pad = ({ clip }) => {
 
   // Active state for button animation
-  const [active, setActive] = React.useState(false)
+  const [active, setActive] = useState(false)
 
   // UseEffect to handle key presses
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener('keydown', handleKeyPress);
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
